@@ -1,0 +1,208 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Pemangkas Nama Web</title>
+<meta name="robots" content="noindex">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>✂️</text></svg>">
+<style>
+  :root{--hijau:#2e8b62;--hijau-tua:#1f3d33;--latar:#f3f6f4;--kartu:#fff;--garis:#dde5e1;--abu:#5b6f67;--merah:#c0392b}
+  *{box-sizing:border-box}
+  body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",sans-serif;background:var(--latar);color:var(--hijau-tua)}
+  .wrap{max-width:900px;margin:0 auto;padding:32px 18px 60px}
+  header{display:flex;align-items:center;justify-content:space-between;margin-bottom:24px}
+  header h1{margin:0;font-size:1.6rem;letter-spacing:-.02em}
+  header h1 span{color:var(--hijau)}
+  .kartu{background:var(--kartu);border:1px solid var(--garis);border-radius:16px;padding:22px;box-shadow:0 4px 18px rgba(31,61,51,.06);margin-bottom:20px}
+  label{display:block;font-size:.85rem;font-weight:600;margin:0 0 6px}
+  input{width:100%;padding:12px 14px;border:1.5px solid var(--garis);border-radius:10px;font-size:1rem;background:#fafcfb;color:inherit}
+  input:focus{outline:none;border-color:var(--hijau);background:#fff}
+  .baris{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:14px}
+  .awalan{display:flex;align-items:center;border:1.5px solid var(--garis);border-radius:10px;background:#fafcfb;overflow:hidden}
+  .awalan span{padding:0 4px 0 12px;color:var(--abu);font-size:.9rem;white-space:nowrap}
+  .awalan input{border:none;background:transparent;padding-left:2px}
+  .awalan:focus-within{border-color:var(--hijau);background:#fff}
+  button{font:inherit;cursor:pointer;border:none;border-radius:10px}
+  .utama{margin-top:18px;width:100%;padding:13px;background:var(--hijau);color:#fff;font-weight:700;font-size:1rem}
+  .utama:hover{filter:brightness(1.07)}
+  .utama:disabled{opacity:.6;cursor:wait}
+  .kecil{padding:7px 12px;font-size:.82rem;background:#eaf3ee;color:var(--hijau-tua);font-weight:600}
+  .kecil:hover{background:#d9ebe1}
+  .kecil.bahaya{background:#fbeceb;color:var(--merah)}
+  .kecil.bahaya.yakin{background:var(--merah);color:#fff}
+  .pesan{margin-top:12px;font-size:.9rem;color:var(--merah);min-height:1em}
+  .hasil{display:none;margin-top:16px;padding:16px;border-radius:12px;background:#eaf3ee;align-items:center;gap:12px;flex-wrap:wrap}
+  .hasil.tampil{display:flex}
+  .hasil a{font-weight:700;font-size:1.1rem;color:var(--hijau);word-break:break-all;flex:1}
+  .judul-daftar{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:14px}
+  .judul-daftar h2{margin:0;font-size:1.1rem}
+  .judul-daftar input{max-width:240px;padding:8px 12px;font-size:.9rem}
+  .item{display:grid;grid-template-columns:1fr auto;gap:10px;padding:14px 0;border-top:1px solid var(--garis);align-items:center}
+  .item:first-child{border-top:none}
+  .pendek{font-weight:700;color:var(--hijau);text-decoration:none}
+  .asli{font-size:.85rem;color:var(--abu);word-break:break-all;margin-top:3px}
+  .info{font-size:.78rem;color:var(--abu);margin-top:4px}
+  .klik{display:inline-block;background:var(--hijau-tua);color:#fff;border-radius:20px;padding:1px 9px;font-weight:700;margin-right:6px}
+  .aksi{display:flex;gap:6px}
+  .kosong{color:var(--abu);text-align:center;padding:20px 0}
+  #layarLogin{min-height:80vh;display:grid;place-items:center}
+  #layarLogin .kartu{width:100%;max-width:380px;text-align:center}
+  #layarLogin h1{margin:0 0 6px}
+  #layarLogin p{color:var(--abu);margin:0 0 18px;font-size:.92rem}
+  .keluar{background:none;color:var(--abu);font-size:.88rem;text-decoration:underline}
+  @media (max-width:600px){.baris{grid-template-columns:1fr}.item{grid-template-columns:1fr}.judul-daftar{flex-direction:column;align-items:stretch}.judul-daftar input{max-width:none}}
+</style>
+</head>
+<body>
+
+<div id="layarLogin" class="wrap">
+  <form class="kartu" id="formLogin">
+    <h1>✂️ Pemangkas Nama Web</h1>
+    <p>Masuk untuk mengelola link pangkasan.</p>
+    <input type="password" id="pass" placeholder="Password admin" autocomplete="current-password" required>
+    <button class="utama" type="submit">Masuk</button>
+    <div class="pesan" id="pesanLogin"></div>
+  </form>
+</div>
+
+<div id="layarUtama" class="wrap" hidden>
+  <header>
+    <h1>✂️ <span>Pemangkas</span> Nama Web</h1>
+    <button class="keluar" id="keluar">Keluar</button>
+  </header>
+
+  <form class="kartu" id="formBuat">
+    <label for="url">Link panjang</label>
+    <input id="url" placeholder="https://contoh.com/halaman/yang/sangat/panjang" required>
+    <div class="baris">
+      <div>
+        <label for="kode">Kode khusus (opsional)</label>
+        <div class="awalan"><span id="domain"></span><input id="kode" placeholder="acak"></div>
+      </div>
+      <div>
+        <label for="catatan">Catatan (opsional)</label>
+        <input id="catatan" placeholder="mis. Form pendaftaran PBB">
+      </div>
+    </div>
+    <button class="utama" type="submit" id="tombolBuat">Pangkas</button>
+    <div class="pesan" id="pesanBuat"></div>
+    <div class="hasil" id="hasil">
+      <a id="linkHasil" target="_blank" rel="noopener"></a>
+      <button type="button" class="kecil" id="salinHasil">Salin</button>
+    </div>
+  </form>
+
+  <div class="kartu">
+    <div class="judul-daftar">
+      <h2>Daftar link <span id="jumlah" style="color:var(--abu);font-weight:400"></span></h2>
+      <input id="cari" placeholder="Cari…">
+    </div>
+    <div id="daftar"><div class="kosong">Memuat…</div></div>
+  </div>
+</div>
+
+<script>
+const ORIGIN = location.origin;
+const $ = (id) => document.getElementById(id);
+let sandi = "";
+let semua = [];
+
+function simpan(k, v){ try{ v===null ? sessionStorage.removeItem(k) : sessionStorage.setItem(k, v); }catch(e){} }
+function ambil(k){ try{ return sessionStorage.getItem(k); }catch(e){ return null; } }
+
+async function api(path, opt = {}) {
+  const r = await fetch(path, { ...opt, headers: { "content-type": "application/json", "x-admin-pass": sandi, ...(opt.headers||{}) } });
+  let data = {};
+  try { data = await r.json(); } catch(e){}
+  if (!r.ok) { const err = new Error(data.error || ("Gagal (" + r.status + ")")); err.status = r.status; throw err; }
+  return data;
+}
+
+function esc(s){ return String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c])); }
+function tgl(t){ return t ? new Date(t).toLocaleString("id-ID",{day:"numeric",month:"short",year:"numeric",hour:"2-digit",minute:"2-digit"}) : "-"; }
+
+async function salin(teks, tombol){
+  try { await navigator.clipboard.writeText(teks); }
+  catch(e){ const t=document.createElement("textarea"); t.value=teks; document.body.appendChild(t); t.select(); document.execCommand("copy"); t.remove(); }
+  const asal = tombol.textContent; tombol.textContent = "Tersalin ✓"; setTimeout(()=>tombol.textContent=asal, 1400);
+}
+
+function tampilkan(){
+  const q = $("cari").value.trim().toLowerCase();
+  const list = semua.filter(l => !q || (l.code+" "+l.url+" "+(l.note||"")).toLowerCase().includes(q));
+  $("jumlah").textContent = semua.length ? "(" + semua.length + ")" : "";
+  if (!list.length) { $("daftar").innerHTML = '<div class="kosong">' + (semua.length ? "Tidak ada yang cocok." : "Belum ada link. Buat yang pertama di atas.") + '</div>'; return; }
+  $("daftar").innerHTML = list.map(l => {
+    const pendek = ORIGIN + "/" + l.code;
+    return `<div class="item">
+      <div>
+        <a class="pendek" href="${esc(pendek)}" target="_blank" rel="noopener">${esc(pendek.replace(/^https?:\/\//,""))}</a>
+        ${l.note ? `<span style="color:var(--abu);font-size:.85rem"> · ${esc(l.note)}</span>` : ""}
+        <div class="asli">${esc(l.url)}</div>
+        <div class="info"><span class="klik">${l.clicks||0}</span>klik · dibuat ${tgl(l.created)}${l.lastClick ? " · klik terakhir " + tgl(l.lastClick) : ""}</div>
+      </div>
+      <div class="aksi">
+        <button class="kecil" data-salin="${esc(pendek)}">Salin</button>
+        <button class="kecil bahaya" data-hapus="${esc(l.code)}">Hapus</button>
+      </div>
+    </div>`;
+  }).join("");
+}
+
+async function muat(){
+  try { semua = (await api("/api/links")).links || []; tampilkan(); }
+  catch(e){ if (e.status === 401) return keluar("Password salah."); $("daftar").innerHTML = '<div class="kosong">' + esc(e.message) + '</div>'; }
+}
+
+function masuk(){
+  $("layarLogin").hidden = true; $("layarUtama").hidden = false;
+  $("domain").textContent = location.host + "/";
+  muat();
+}
+function keluar(pesan){
+  sandi = ""; simpan("pemangkas_pass", null);
+  $("layarUtama").hidden = true; $("layarLogin").hidden = false;
+  $("pesanLogin").textContent = pesan || ""; $("pass").value = ""; $("pass").focus();
+}
+
+$("formLogin").addEventListener("submit", async (e) => {
+  e.preventDefault();
+  sandi = $("pass").value; $("pesanLogin").textContent = "";
+  try { semua = (await api("/api/links")).links || []; simpan("pemangkas_pass", sandi); masuk(); }
+  catch(err){ sandi = ""; $("pesanLogin").textContent = err.message; }
+});
+$("keluar").addEventListener("click", () => keluar());
+
+$("formBuat").addEventListener("submit", async (e) => {
+  e.preventDefault();
+  $("pesanBuat").textContent = ""; $("tombolBuat").disabled = true; $("hasil").classList.remove("tampil");
+  try {
+    const d = await api("/api/links", { method: "POST", body: JSON.stringify({ url: $("url").value, code: $("kode").value, note: $("catatan").value }) });
+    const pendek = ORIGIN + "/" + d.code;
+    $("linkHasil").href = pendek; $("linkHasil").textContent = pendek.replace(/^https?:\/\//,"");
+    $("hasil").classList.add("tampil");
+    $("url").value = ""; $("kode").value = ""; $("catatan").value = "";
+    semua.unshift(d); tampilkan();
+  } catch(err){ if (err.status === 401) return keluar("Sesi berakhir, silakan masuk lagi."); $("pesanBuat").textContent = err.message; }
+  finally { $("tombolBuat").disabled = false; }
+});
+$("salinHasil").addEventListener("click", (e) => salin($("linkHasil").href, e.target));
+$("cari").addEventListener("input", tampilkan);
+
+$("daftar").addEventListener("click", async (e) => {
+  const b = e.target.closest("button"); if (!b) return;
+  if (b.dataset.salin) return salin(b.dataset.salin, b);
+  if (b.dataset.hapus) {
+    if (!b.classList.contains("yakin")) { b.classList.add("yakin"); b.textContent = "Yakin?"; setTimeout(()=>{ b.classList.remove("yakin"); b.textContent="Hapus"; }, 3000); return; }
+    b.disabled = true;
+    try { await api("/api/links/" + encodeURIComponent(b.dataset.hapus), { method: "DELETE" }); semua = semua.filter(l => l.code !== b.dataset.hapus); tampilkan(); }
+    catch(err){ b.disabled = false; alert(err.message); }
+  }
+});
+
+const tersimpan = ambil("pemangkas_pass");
+if (tersimpan) { sandi = tersimpan; masuk(); } else { $("pass").focus(); }
+</script>
+</body>
+</html>
